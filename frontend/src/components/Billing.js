@@ -93,7 +93,7 @@ const Billing = () => {
   };
 
   const filteredBills = bills.filter(bill =>
-    bill.customer?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bill.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bill.meter?.meterNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bill.status?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -139,7 +139,7 @@ const Billing = () => {
                   .filter(meter => !form.customerId || meter.customer?.id == form.customerId)
                   .map(meter => (
                     <option key={meter.id} value={meter.id}>
-                      {meter.meterNumber} - {meter.utilityType?.name}
+                      {meter.meterNumber} - {meter.utilityType?.utilityName}
                     </option>
                   ))}
               </select>
@@ -222,7 +222,7 @@ const Billing = () => {
                 {filteredBills.map(bill => (
                   <tr key={bill.id}>
                     <td>{bill.id}</td>
-                    <td>{bill.customer?.name}</td>
+                    <td>{bill.customer?.fullName}</td>
                     <td>{bill.meter?.meterNumber}</td>
                     <td>Rs{bill.amount?.toFixed(2)}</td>
                     <td>Rs{bill.outstandingBalance?.toFixed(2)}</td>

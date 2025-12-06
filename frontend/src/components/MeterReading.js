@@ -62,7 +62,7 @@ const MeterReading = () => {
 
   const filteredReadings = readings.filter(reading =>
     reading.meter?.meterNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    reading.meter?.customer?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    reading.meter?.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -87,7 +87,7 @@ const MeterReading = () => {
                 <option value="">Select Meter</option>
                 {meters.map(meter => (
                   <option key={meter.id} value={meter.id}>
-                    {meter.meterNumber} - {meter.customer?.name} ({meter.utilityType?.name})
+                    {meter.meterNumber} - {meter.customer?.fullName} ({meter.utilityType?.utilityName})
                   </option>
                 ))}
               </select>
@@ -156,8 +156,8 @@ const MeterReading = () => {
                   <tr key={reading.id}>
                     <td>{reading.id}</td>
                     <td>{reading.meter?.meterNumber}</td>
-                    <td>{reading.meter?.customer?.name}</td>
-                    <td>{reading.meter?.utilityType?.name}</td>
+                    <td>{reading.meter?.customer?.fullName}</td>
+                    <td>{reading.meter?.utilityType?.utilityName}</td>
                     <td>{reading.currentReading}</td>
                     <td>{reading.readingDate ? new Date(reading.readingDate).toLocaleDateString() : '-'}</td>
                     <td>{reading.previousReading || '-'}</td>

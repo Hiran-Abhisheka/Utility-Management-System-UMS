@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class Report {
     private String summary;
     private LocalDate generatedDate;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee manager;

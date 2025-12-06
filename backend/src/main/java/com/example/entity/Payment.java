@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bill_id")
     private Bill bill;
@@ -19,6 +21,7 @@ public class Payment {
     private String method; // Cash, Card, Online
     private String receiptNo;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee cashier;

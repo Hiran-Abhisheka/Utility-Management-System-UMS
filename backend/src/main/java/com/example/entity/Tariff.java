@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tariffId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "utility_type_id")
     private UtilityType utilityType;

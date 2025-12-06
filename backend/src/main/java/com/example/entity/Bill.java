@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,10 +18,12 @@ public class Bill {
     @Enumerated(EnumType.STRING)
     private BillStatus status;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "meter_id")
     private Meter meter;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "reading_id")
     private Reading reading;

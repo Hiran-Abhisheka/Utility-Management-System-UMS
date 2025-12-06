@@ -122,8 +122,8 @@ const MeterManagement = () => {
 
   const filteredMeters = meters.filter(meter =>
     meter.meterNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    meter.customer?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    meter.utilityType?.name.toLowerCase().includes(searchTerm.toLowerCase())
+    meter.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    meter.utilityType?.utilityName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -189,7 +189,7 @@ const MeterManagement = () => {
               >
                 <option value="">Select Utility Type</option>
                 {utilityTypes.map(type => (
-                  <option key={type.id} value={type.id}>{type.name}</option>
+                  <option key={type.id} value={type.id}>{type.utilityName}</option>
                 ))}
               </select>
             </div>
@@ -247,8 +247,8 @@ const MeterManagement = () => {
                   <tr key={meter.id}>
                     <td>{meter.id}</td>
                     <td>{meter.meterNumber}</td>
-                    <td>{meter.customer?.name}</td>
-                    <td>{meter.utilityType?.name}</td>
+                    <td>{meter.customer?.fullName}</td>
+                    <td>{meter.utilityType?.utilityName}</td>
                     <td>
                       <span className={`status-badge ${meter.status?.toLowerCase()}`}>
                         {meter.status || 'ACTIVE'}

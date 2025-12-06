@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -27,10 +28,12 @@ public class Reading {
     @Column(name = "units_consumed")
     private Double unitsConsumed; // Derived: currentReading - previousReading
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meter_id", nullable = false)
     private Meter meter;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee; // MeterReader

@@ -225,5 +225,151 @@ INSERT INTO electricity (utility_id, unit_type) VALUES (1, 'kWh');
 INSERT INTO water (utility_id, unit_type) VALUES (2, 'm³');
 INSERT INTO gas (utility_id, unit_type) VALUES (3, 'units');
 
+GO
+
+-- =====================================================================================
+-- TRIGGERS
+-- =====================================================================================
+
+-- Trigger 1: Auto-update bill status when payment is added
+CREATE TRIGGER trg_UpdateBillStatusOnPayment
+ON payment
+AFTER INSERT
+AS
+BEGIN
+    UPDATE bill
+    SET status = 'PAID'
+    WHERE bill_id IN (
+        SELECT DISTINCT i.bill_id
+        FROM inserted i
+        WHERE i.bill_id = bill.bill_id
+        AND bill.amount <= (
+            SELECT SUM(p.amount)
+            FROM payment p
+            WHERE p.bill_id = bill.bill_id
+        )
+    );
+END;
+GO
+
+-- Trigger 2: Auto-update meter status when reading is added
+CREATE TRIGGER trg_UpdateMeterStatusOnReading
+ON reading
+AFTER INSERT
+AS
+BEGIN
+    UPDATE meter
+    SET status = 'ACTIVE'
+    WHERE meter_id IN (
+        SELECT DISTINCT i.meter_id
+        FROM inserted i
+        WHERE i.meter_id = meter.meter_id
+    );
+END;
+GO
+
+-- =====================================================================================
+-- USER DEFINED FUNCTIONS
+-- =====================================================================================
+
+-- UDF 1: Calculate monthly bill amount
+CREATE FUNCTION fn_CalculateBillAmount (
+    @usage DECIMAL(10,2),
+    @tariff_rate DECIMAL(10,2)
+)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    RETURN @usage * @tariff_rate;
+END;
+GO
+
+-- UDF 2: Calculate late payment fee
+CREATE FUNCTION fn_CalculateLateFee (
+    @due_date DATE,
+    @payment_date DATE,
+    @bill_amount DECIMAL(10,2),
+    @late_fee_rate DECIMAL(5,2) = 0.02 -- 2% per day
+)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    IF @payment_date > @due_date
+        RETURN DATEDIFF(DAY, @due_date, @payment_date) * @bill_amount * @late_fee_rate;
+    RETURN 0;
+END;
+GO
+
+-- =====================================================================================
+-- VIEWS
+-- =====================================================================================
+
+-- View 1: Summary of unpaid bills
+CREATE VIEW vw_UnpaidBillsSummary AS
+SELECT
+    c.full_name AS customer_name,
+    c.contact_no,
+    b.bill_id,
+    b.amount,
+    b.due_date,
+    b.status,
+    DATEDIFF(DAY, b.due_date, GETDATE()) AS days_overdue
+FROM bill b
+JOIN meter m ON b.meter_id = m.meter_id
+JOIN customer c ON m.customer_id = c.customer_id
+WHERE b.status != 'PAID';
+GO
+
+-- View 2: Monthly revenue report
+CREATE VIEW vw_MonthlyRevenueReport AS
+SELECT
+    YEAR(p.payment_date) AS year,
+    MONTH(p.payment_date) AS month,
+    SUM(p.amount) AS total_revenue,
+    COUNT(p.payment_id) AS payment_count
+FROM payment p
+GROUP BY YEAR(p.payment_date), MONTH(p.payment_date);
+GO
+
+-- =====================================================================================
+-- STORED PROCEDURES
+-- =====================================================================================
+
+-- SP 1: Generate bill for a customer
+CREATE PROCEDURE sp_GenerateBillForCustomer
+    @customer_id BIGINT,
+    @meter_id BIGINT,
+    @usage DECIMAL(10,2),
+    @tariff_rate DECIMAL(10,2)
+AS
+BEGIN
+    DECLARE @bill_amount DECIMAL(10,2);
+    SET @bill_amount = dbo.fn_CalculateBillAmount(@usage, @tariff_rate);
+
+    INSERT INTO bill (meter_id, amount, due_date, status, bill_date)
+    VALUES (@meter_id, @bill_amount, DATEADD(DAY, 30, GETDATE()), 'UNPAID', GETDATE());
+END;
+GO
+
+-- SP 2: List defaulters (customers with overdue bills)
+CREATE PROCEDURE sp_ListDefaulters
+AS
+BEGIN
+    SELECT
+        c.customer_id,
+        c.full_name,
+        c.contact_no,
+        COUNT(b.bill_id) AS overdue_bills_count,
+        SUM(b.amount) AS total_overdue_amount,
+        MAX(DATEDIFF(DAY, b.due_date, GETDATE())) AS max_days_overdue
+    FROM customer c
+    JOIN meter m ON c.customer_id = m.customer_id
+    JOIN bill b ON m.meter_id = b.meter_id
+    WHERE b.status != 'PAID' AND b.due_date < GETDATE()
+    GROUP BY c.customer_id, c.full_name, c.contact_no
+    ORDER BY total_overdue_amount DESC;
+END;
+GO
+
 PRINT 'Database setup completed successfully!';
 GO

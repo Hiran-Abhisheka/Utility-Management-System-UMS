@@ -202,7 +202,7 @@ const Reports = () => {
               {bills.slice(0, 10).map(bill => (
                 <tr key={bill.id}>
                   <td>{bill.id}</td>
-                  <td>{bill.customer?.name}</td>
+                  <td>{bill.customer?.fullName}</td>
                   <td>Rs{bill.amount?.toFixed(2)}</td>
                   <td>
                     <span className={`status-badge ${bill.status?.toLowerCase()}`}>

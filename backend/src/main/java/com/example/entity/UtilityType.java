@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -16,9 +17,11 @@ public class UtilityType {
     private String utilityName;
 
     @OneToMany(mappedBy = "utilityType", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Meter> meters;
 
     @OneToMany(mappedBy = "utilityType", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Tariff> tariffs;
 
     public UtilityType() {
