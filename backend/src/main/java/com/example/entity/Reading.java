@@ -38,6 +38,7 @@ public class Reading {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee; // MeterReader
 
+    @JsonIgnore
     @OneToOne(mappedBy = "reading", cascade = CascadeType.ALL)
     private Bill bill;
 

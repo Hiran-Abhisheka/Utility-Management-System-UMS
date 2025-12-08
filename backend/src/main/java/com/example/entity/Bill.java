@@ -10,7 +10,8 @@ import java.util.List;
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long billId;
+    @Column(name = "bill_id")
+    private Long id;
 
     private LocalDate billDate;
     private LocalDate dueDate;
@@ -18,8 +19,7 @@ public class Bill {
     @Enumerated(EnumType.STRING)
     private BillStatus status;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "meter_id")
     private Meter meter;
 
@@ -51,12 +51,12 @@ public class Bill {
     }
 
     // Getters and Setters
-    public Long getBillId() {
-        return billId;
+    public Long getId() {
+        return id;
     }
 
-    public void setBillId(Long billId) {
-        this.billId = billId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDate getBillDate() {

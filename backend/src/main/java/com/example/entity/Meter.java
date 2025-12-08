@@ -35,9 +35,11 @@ public class Meter {
     @JoinColumn(name = "utility_id", nullable = false)
     private UtilityType utilityType;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "meter", cascade = CascadeType.ALL)
     private List<Reading> readings;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "meter", cascade = CascadeType.ALL)
     private List<Bill> bills;
 

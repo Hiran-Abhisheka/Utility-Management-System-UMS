@@ -93,7 +93,7 @@ const Billing = () => {
   };
 
   const filteredBills = bills.filter(bill =>
-    bill.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    bill.meter?.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bill.meter?.meterNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
     bill.status?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -222,7 +222,7 @@ const Billing = () => {
                 {filteredBills.map(bill => (
                   <tr key={bill.id}>
                     <td>{bill.id}</td>
-                    <td>{bill.customer?.fullName}</td>
+                    <td>{bill.meter?.customer?.fullName}</td>
                     <td>{bill.meter?.meterNumber}</td>
                     <td>Rs{bill.amount?.toFixed(2)}</td>
                     <td>Rs{bill.outstandingBalance?.toFixed(2)}</td>
