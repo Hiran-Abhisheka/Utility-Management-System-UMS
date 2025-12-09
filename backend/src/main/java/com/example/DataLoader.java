@@ -336,98 +336,6 @@ public class DataLoader {
         meter10.setUtilityType(water);
         meterRepository.save(meter10);
 
-        // Additional meters (5 more to reach 15 total)
-        Meter meter11 = new Meter();
-        meter11.setMeterNumber("M011");
-        meter11.setStatus(Meter.MeterStatus.ACTIVE);
-        meter11.setInstallationDate(LocalDate.of(2025, 4, 15));
-        meter11.setConnectionDate(LocalDate.of(2025, 4, 15));
-        meter11.setCustomer(household);
-        meter11.setUtilityType(gas);
-        meterRepository.save(meter11);
-
-        Meter meter12 = new Meter();
-        meter12.setMeterNumber("M012");
-        meter12.setStatus(Meter.MeterStatus.ACTIVE);
-        meter12.setInstallationDate(LocalDate.of(2025, 4, 20));
-        meter12.setConnectionDate(LocalDate.of(2025, 4, 20));
-        meter12.setCustomer(business);
-        meter12.setUtilityType(electricity);
-        meterRepository.save(meter12);
-
-        Meter meter13 = new Meter();
-        meter13.setMeterNumber("M013");
-        meter13.setStatus(Meter.MeterStatus.ACTIVE);
-        meter13.setInstallationDate(LocalDate.of(2025, 4, 25));
-        meter13.setConnectionDate(LocalDate.of(2025, 4, 25));
-        meter13.setCustomer(household2);
-        meter13.setUtilityType(water);
-        meterRepository.save(meter13);
-
-        Meter meter14 = new Meter();
-        meter14.setMeterNumber("M014");
-        meter14.setStatus(Meter.MeterStatus.ACTIVE);
-        meter14.setInstallationDate(LocalDate.of(2025, 5, 1));
-        meter14.setConnectionDate(LocalDate.of(2025, 5, 1));
-        meter14.setCustomer(household3);
-        meter14.setUtilityType(electricity);
-        meterRepository.save(meter14);
-
-        Meter meter15 = new Meter();
-        meter15.setMeterNumber("M015");
-        meter15.setStatus(Meter.MeterStatus.ACTIVE);
-        meter15.setInstallationDate(LocalDate.of(2025, 5, 5));
-        meter15.setConnectionDate(LocalDate.of(2025, 5, 5));
-        meter15.setCustomer(business2);
-        meter15.setUtilityType(gas);
-        meterRepository.save(meter15);
-
-        // Additional meters (5 more)
-        Meter meter16 = new Meter();
-        meter16.setMeterNumber("M016");
-        meter16.setStatus(Meter.MeterStatus.ACTIVE);
-        meter16.setInstallationDate(LocalDate.of(2025, 5, 10));
-        meter16.setConnectionDate(LocalDate.of(2025, 5, 10));
-        meter16.setCustomer(household4);
-        meter16.setUtilityType(electricity);
-        meterRepository.save(meter16);
-
-        Meter meter17 = new Meter();
-        meter17.setMeterNumber("M017");
-        meter17.setStatus(Meter.MeterStatus.ACTIVE);
-        meter17.setInstallationDate(LocalDate.of(2025, 5, 15));
-        meter17.setConnectionDate(LocalDate.of(2025, 5, 15));
-        meter17.setCustomer(household5);
-        meter17.setUtilityType(water);
-        meterRepository.save(meter17);
-
-        Meter meter18 = new Meter();
-        meter18.setMeterNumber("M018");
-        meter18.setStatus(Meter.MeterStatus.ACTIVE);
-        meter18.setInstallationDate(LocalDate.of(2025, 5, 20));
-        meter18.setConnectionDate(LocalDate.of(2025, 5, 20));
-        meter18.setCustomer(business3);
-        meter18.setUtilityType(gas);
-        meterRepository.save(meter18);
-
-        Meter meter19 = new Meter();
-        meter19.setMeterNumber("M019");
-        meter19.setStatus(Meter.MeterStatus.ACTIVE);
-        meter19.setInstallationDate(LocalDate.of(2025, 5, 25));
-        meter19.setConnectionDate(LocalDate.of(2025, 5, 25));
-        meter19.setCustomer(household6);
-        meter19.setUtilityType(electricity);
-        meterRepository.save(meter19);
-
-        Meter meter20 = new Meter();
-        meter20.setMeterNumber("M020");
-        meter20.setStatus(Meter.MeterStatus.ACTIVE);
-        meter20.setInstallationDate(LocalDate.of(2025, 6, 1));
-        meter20.setConnectionDate(LocalDate.of(2025, 6, 1));
-        meter20.setCustomer(household7);
-        meter20.setUtilityType(water);
-        meterRepository.save(meter20);
-
         // Create tariffs
         Tariff electricityTariff = new Tariff();
         electricityTariff.setUtilityType(electricity);
@@ -476,14 +384,14 @@ public class DataLoader {
                 billRepository.save(bill);
 
                 // Add payment for some bills
-                if (i % 3 == 0) {
+                if (i % 2 == 0) { // Changed from i % 3 == 0 to i % 2 == 0 to create more payments
                     Payment payment = new Payment();
                     payment.setBill(bill);
                     payment.setCashier(cashier);
-                    payment.setAmountPaid(100.0 + i * 5);
+                    payment.setAmountPaid(50.0 + i * 2); // Varied amounts
                     payment.setPaymentDate(LocalDate.now().minusDays(i - 1));
-                    payment.setMethod("Cash");
-                    payment.setReceiptNo("RCP" + i);
+                    payment.setMethod(i % 4 == 0 ? "Card" : i % 4 == 2 ? "Online" : "Cash"); // Varied payment methods
+                    payment.setReceiptNo("RCP" + String.format("%03d", i));
                     paymentRepository.save(payment);
 
                     bill.setStatus(BillStatus.PAID);

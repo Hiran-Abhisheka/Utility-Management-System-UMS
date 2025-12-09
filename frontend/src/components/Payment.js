@@ -66,7 +66,7 @@ const Payment = () => {
   };
 
   const filteredPayments = payments.filter(payment =>
-    payment.bill?.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    payment.bill?.meter?.customer?.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     payment.method?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     payment.bill?.id.toString().includes(searchTerm)
   );
@@ -97,7 +97,7 @@ const Payment = () => {
                   .filter(bill => bill.outstandingBalance > 0)
                   .map(bill => (
                     <option key={bill.id} value={bill.id}>
-                      Bill #{bill.id} - {bill.customer?.fullName} - Outstanding: Rs{bill.outstandingBalance?.toFixed(2)}
+                      Bill #{bill.id} - {bill.meter?.customer?.fullName} - Outstanding: Rs{bill.outstandingBalance?.toFixed(2)}
                     </option>
                   ))}
               </select>
@@ -105,7 +105,7 @@ const Payment = () => {
 
             {selectedBill && (
               <div className="bill-info">
-                <p><strong>Customer:</strong> {selectedBill.customer?.fullName}</p>
+                <p><strong>Customer:</strong> {selectedBill.meter?.customer?.fullName}</p>
                 <p><strong>Total Amount:</strong> Rs{selectedBill.amount?.toFixed(2)}</p>
                 <p><strong>Outstanding:</strong> Rs{selectedBill.outstandingBalance?.toFixed(2)}</p>
               </div>
@@ -202,7 +202,7 @@ const Payment = () => {
                   <tr key={payment.id}>
                     <td>{payment.id}</td>
                     <td>{payment.bill?.id}</td>
-                    <td>{payment.bill?.customer?.fullName}</td>
+                    <td>{payment.bill?.meter?.customer?.fullName}</td>
                     <td>Rs{payment.amount?.toFixed(2)}</td>
                     <td>{payment.method}</td>
                     <td>{payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString() : '-'}</td>

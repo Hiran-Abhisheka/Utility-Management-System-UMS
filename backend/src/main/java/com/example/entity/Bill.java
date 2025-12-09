@@ -28,6 +28,7 @@ public class Bill {
     @JoinColumn(name = "reading_id")
     private Reading reading;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "bill")
     private List<Payment> payments;
 

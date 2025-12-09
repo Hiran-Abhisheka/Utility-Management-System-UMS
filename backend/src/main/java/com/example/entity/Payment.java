@@ -11,7 +11,6 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bill_id")
     private Bill bill;
